@@ -1,0 +1,30 @@
+{
+  "name": "primerdb-server",
+  "version": "1.0.0",
+  "description": "The server part of primerdb",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --compilers js:babel/register --require ./test/test_helper.js --recursive",
+    "test:watch": "npm run test -- --watch"
+  },
+  "keywords": [
+    "primer",
+    "db",
+    "react",
+    "immutable",
+    "node",
+    "socket.io",
+    "redux"
+  ],
+  "author": "Sebastian Hanke",
+  "license": "MIT",
+  "dependencies": {
+    "immutable": "^3.7.5"
+  },
+  "devDependencies": {
+    "babel": "^5.8.29",
+    "chai": "^3.4.0",
+    "chai-immutable": "^1.4.0",
+    "mocha": "^2.3.3"
+  }
+}
