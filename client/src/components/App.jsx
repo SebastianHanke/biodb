@@ -1,88 +1,44 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import * as actionCreators from '../action_creators';
-import {Map} from 'immutable';
+import { bindActionCreators } from 'redux';
+import * as actionCreators from '../actions';
 
+import InputForm from './InputForm';
 import {DebuggerContainer} from './Debugger';
+import {BarChart} from './Chart';
+
 
 export const App = React.createClass({
-
-    handleChange () {
-        const newState = new Map({
-            id: this.refs.id.value,
-            name: this.refs.name.value,
-            author: this.refs.author.value,
-            userId: this.refs.userId.value,
-            isPrivate: this.refs.isPrivate.value
-        })
-
-        this.props.setState(newState);
-    },
-
-    handleSubmit (event) {
-        event.preventDefault();
-        // here ajax call?
-        /*const newState = new Map({
-            id: this.refs.id.value,
-            name: this.refs.name.value,
-            author: this.refs.author.value,
-            userId: this.refs.userId.value,
-            isPrivate: this.refs.isPrivate.value
-        })
-
-        this.props.setState(newState);*/
-
-    },
     render () {
+        console.log('app props',this.props)
         return (
             <div>
-                <form onSubmit={this.handleSubmit}>
-                    {this.renderTextInput('id', 'Primer ID')}
-                    {this.renderTextInput('name', 'Primer Name')}
-                    {this.renderTextInput('author', 'Author')}
-                    {this.renderTextInput('userId', 'User ID')}
-                    {this.renderSelectBox('isPrivate', 'Is private', ['ja', 'nein'])}
-                    <div>
-                        <input type="submit" value="Speichern"/>
-                    </div>
-                </form>
-                <DebuggerContainer />
-            </div>
-        )
-    },
-    renderTextInput (id, label) {
-        return (
-            <div key={id}>
-                <label>{label}:</label>
-                <div>
-                    <input type="text" ref={id} onChange={this.handleChange.bind(this, {id})}/>
-                </div>
-            </div>
-        )
-    },
-    renderSelectBox (id, label, options) {
-        return (
-            <div ref={id}>
-                <label>{label}:</label>
-                <div>
-                    <select  onChange={this.handleChange.bind(this, {id})}>
-                        {options.map(item => {
-                            console.log(item)
-                            return <option key={item} value={item}>{item}</option>
-                        })}
-                    </select>
-                </div>
+                <InputForm {...this.props}/>
+                {this.props.activeWindow === 'Analyzer'
+                    ? <DebuggerContainer />
+                    : 'Hello, pls type something into the input fields'}
+                <BarChart />
             </div>
         )
     }
 });
 
-
 function mapStateToProps(state) {
     return {
-        id: state.get('id'),
-        name: state.get('name')
-    };
+        primer: {
+            name: state.getIn(['primer','name']),
+            id: state.getIn(['primer','id']),
+            author: state.getIn(['primer','author']),
+            userId: state.getIn(['primer','userId']),
+            isPrivate: state.getIn(['primer','isPrivate']),
+            targetSeq: state.getIn(['primer', 'targetSeq'])
+        },
+        activeWindow: state.get('activeWindow')
+    }
 }
 
-export const AppContainer = connect(mapStateToProps, actionCreators)(App);
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(actionCreators, dispatch)
+}
+
+export const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);

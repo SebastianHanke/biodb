@@ -1,5 +1,34 @@
 import {List, Map} from 'immutable';
 
+simplePrimerState = Map({
+    id: Map({
+        name: 'string',
+        author: 'string',
+        pcrTypes: List.of('pcrType'),
+        targetSequence: Map({
+            sequence: 'string',
+            length: 'integer',
+            containingGenes: List.of('geneName')
+        }),
+        fwd: Map({
+            sequence: 'string',
+            annealingTemperature: 'float',
+            meltingTemperature: 'float',
+            startingPositionOnTargetSequence: 'integer',
+            endPositionOnTargetSequence: 'integer',
+            compatiblePrimers: List.of('compatiblePrimerIds.rev')
+        }),
+        rev: Map({
+            sequence: 'string',
+            annealingTemperature: 'float',
+            meltingTemperature: 'float',
+            startingPositionOnTargetSequence: 'integer',
+            endPositionOnTargetSequence: 'integer',
+            compatiblePrimers: List.of('compatiblePrimerIds.fwd')
+        })
+    })
+})
+
 primerState = Map({
     id: 'integer',
     name: 'string',
