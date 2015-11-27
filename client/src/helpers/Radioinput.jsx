@@ -18,7 +18,7 @@ export default React.createClass({
                             children:[
                                 React.DOM.input({
                                     onChange: this.props.handleChange,
-                                    key: option,
+                                    key: 'labelinput-'+ option,
                                     type: 'radio',
                                     name: this.props.name,
                                     value: option,
