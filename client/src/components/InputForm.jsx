@@ -5,6 +5,7 @@ import Textarea from '../helpers/Textarea';
 import Textinput from '../helpers/Textinput';
 import Radioinput from '../helpers/Radioinput';
 
+import {SequenceTools as Sequence} from '../helpers/calculation_helpers';
 import {renderTextInput, renderSelectBox, renderCheckbox, renderTextarea, renderRadioButton} from '../helpers/form_fields_helper'
 
 export default React.createClass({
@@ -17,12 +18,15 @@ export default React.createClass({
         else if (event.target.name === 'revSeq') inputData[event.target.name] = event.target.value.toUpperCase()
         else inputData[event.target.name] = event.target.value
 
+        var test = new Sequence('DNA', event.target.value, event.target.name)
+        console.log(test)
+
         this.props.analyzePrimer(fromJS(inputData))
     },
     analyzeInput (event) {
         //TODO: not needed anymore, as its analyzed in realtime...
         event.preventDefault()
-        console.log('analyze')
+        console.log('analyze', event.target)
     },
     render () {
         return (
@@ -78,7 +82,7 @@ export default React.createClass({
                             onClick={this.analyzeInput}>
                         Create
                     </button>
-                    <button onClick={this.createPrimer}>Create</button>
+                    <button onClick={this.analyzeInput}>Create</button>
                 </ul>
             </div>
         )

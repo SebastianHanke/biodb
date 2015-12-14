@@ -6,15 +6,19 @@ import * as actionCreators from '../actions';
 import InputForm from './InputForm';
 import {DebuggerContainer} from './Debugger';
 import {BarChart} from './Chart';
-import {convertSequenceToArrayOfIntegers} from '../helpers/calculation_helpers';
+import { GenerateLookUpTables, SequenceTools } from '../helpers/calculation_helpers';
 
-console.log(convertSequenceToArrayOfIntegers('ATATWWNN'))
+/* example */
 
-console.log('1: 746856836')
-console.log('2: 4291593348')
-1000 0100 0010 0001 1000 0100 0010 1100
-1000 0100 1000 0100 1100 1100 1111 1111
-1000 0100 0000 0000 1000 0100 0010 1100
+
+var seq = new SequenceTools('DNA')
+
+console.log(seq.readSequence('ATGCATGC'))
+
+var first = seq.__convertToUInt32Array('ATGCATGC')
+var second = seq.__convertToUInt32Array('ATGCGTGC')
+console.log(first, second)
+console.log(`There are ${seq.countMatches(first, second)} matches in your comparison`)
 
 export const App = React.createClass({
     render () {

@@ -19,7 +19,7 @@ function analyzePrimer (state, input) {
 
 }
 
-export default function (state = initialState, action = null) {
+export const primerReducer = function (state = initialState, action = null) {
     switch (action.type) {
         case 'ANALYZE_PRIMER':
             return analyzePrimer(state, action.primerStats)
