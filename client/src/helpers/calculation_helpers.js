@@ -363,7 +363,7 @@ export class SequenceTools extends GenerateLookUpTables {
             nucleotidesArray[i] = __byteToNucleotides[dataArray[i]]
         }
 
-        i = nucleotidesArray.length -1
+        var i = nucleotidesArray.length -1
         // TODO: from here
 
         console.debug('-----------nucleotidesArray-------------')

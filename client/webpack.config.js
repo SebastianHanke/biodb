@@ -3,16 +3,27 @@ var autoPrefixer = require('autoprefixer')
 
 module.exports = {
     entry: [
+        'babel-polyfill',
         'webpack-dev-server/client?http://localhost:8080',
         'webpack/hot/only-dev-server',
         './src/index.jsx'
     ],
     module: {
         loaders: [
-            {
+            /*{
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loader: 'react-hot!babel'
+                loaders: ['react-hot', 'babel']
+            },*/
+            {
+                loader: "babel-loader",
+                exclude: /node_modules/,
+                test: /\.jsx?$/,
+                query: {
+                    presets: ['es2015', 'stage-0', 'react'],
+                    plugins: ['transform-runtime'],
+                    cacheDirectory: true
+                }
             },
             {
                 test: /\.styl$/,
