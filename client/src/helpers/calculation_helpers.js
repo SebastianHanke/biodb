@@ -1,5 +1,5 @@
 /*
- *
+ * @flow
  * */
 import {Nt} from './help';
 
@@ -7,13 +7,13 @@ export function calcPositionOnTargetSeq(target: string, fwd_seq: string, rev_seq
 
 }
 
-export function calcGcCount(sequence) {
+export function calcGcCount(sequence: string): Array<number> {
 
     //split returns occurences + 1
 
-    let chars = ['A', 'T', 'C', 'G']
-    let counts = []
-    for (let char of chars) {
+    let chars: Array<string> = ['A', 'T', 'C', 'G']
+    let counts: Array<number> = []
+    for (let char: string of chars) {
         counts.push(sequence.split(char).length - 1)
     }
     return counts
@@ -36,12 +36,12 @@ export function calcGcCount(sequence) {
  *
  * */
 
-var __nucleotideLookupTable = Object.create(null),
-    __nucleotidesToByte,
-    __byteToNucleotides
+var __nucleotideLookupTable: Object = Object.create(null),
+    __nucleotidesToByte: Object,
+    __byteToNucleotides: Array<string>
 
 export class GenerateLookUpTables {
-    constructor() {
+    constructor(): void {
         __nucleotideLookupTable['A'] = 8; //0b1000
         __nucleotideLookupTable['T'] = 4; //0b0100
         __nucleotideLookupTable['G'] = 2; //0b0010
@@ -51,7 +51,7 @@ export class GenerateLookUpTables {
         this.__lookupTable()
     }
 
-    __convertAllNucleotidesToBinary() {
+    __convertAllNucleotidesToBinary(): void {
         /*
          * generate lookupTable for degenerate nucleotides with AND (&) and OR(|)
          * e.g. W = (A | T) = (1000 | 0100) = 1100
@@ -74,13 +74,13 @@ export class GenerateLookUpTables {
         this.__Nuc2BinLookUp('N', 'A', 'T', 'G', 'C'); //N = 0b1111
     }
 
-    __Nuc2BinLookUp(...bases) {
+    __Nuc2BinLookUp(...bases: Array<string>) {
         /*
          * Add basic nucleobases to lookUp-table
          * */
 
 
-        var n = bases[0]
+        var n: string = bases[0]
         __nucleotideLookupTable[n] = 0
         /*
          * e.g.: _lookUp['W'] = 0
@@ -99,8 +99,8 @@ export class GenerateLookUpTables {
         }
     }
 
-    __matchLookupTable() {
-        var a = new Uint8Array(256);
+    __matchLookupTable(): Uint8Array {
+        var a: Uint8Array = new Uint8Array(256);
         var bin;
         for (var i = 0; i < 256; i++) {
             bin = i;
@@ -118,15 +118,15 @@ export class GenerateLookUpTables {
     *
     * */
     __lookupTable() {
-        var a = Object.create(null);
-        var c = [];
+        var a: Object = Object.create(null);
+        var c: Array<string> = [];
 
         //get degenerated nucleotide chars from __nucleotideLookupTable
-        var keys = Object.keys(__nucleotideLookupTable);
-        var len = keys.length;
-        var ki;
-        var kj;
-        var byte;
+        var keys: Array<string> = Object.keys(__nucleotideLookupTable);
+        var len: number = keys.length;
+        var ki: string;
+        var kj: string;
+        var byte: number;
         for (var i = 0; i < len; i++) {
             ki = keys[i];
             for (var j = 0; j < len; j++) {
@@ -158,7 +158,22 @@ export class GenerateLookUpTables {
 
 export class SequenceTools extends GenerateLookUpTables {
 
-    constructor(type, sequence, name) {
+    fnMatchingBitCount: Function;
+    __buffer: ArrayBuffer;
+    __type: string;
+    __name: ?string;
+    __rawSequence: ?string;
+    __endPadding: number;
+    __complement: ?string;
+    __content: ?number;
+    __contentATGC: ?number;
+    __fractionalContent: ?number;
+    __length: ?number;
+    searchSeqLength: ?number;
+    querySeqLength: ?number;
+
+    constructor(type: string, sequence: ?string, name: ?string): void {
+
         // call super constructor
         super()
         this.fnMatchingBitCount = this.__matchLookupTable
@@ -181,57 +196,64 @@ export class SequenceTools extends GenerateLookUpTables {
 
     }
 
-    __convertToUInt32Array(sequenceString) {
+    __convertToUInt32Array(sequenceString: ?string): ?Uint32Array {
+
+        var sequenceBytes: ?number
+        var sequenceBuffer: ?ArrayBuffer
+        var uint8view: ?Uint8Array
 
         // 2 nucleotides = 1 byte (sequenceByte)
-        var sequenceBytes = Math.ceil(sequenceString.length / 2)
-        /*
-         * this defines the length of the ArrayBuffer
-         * ArrayBuffer: generic, fixed-length raw binary data buffer
-         * */
-        var sequenceBuffer = new ArrayBuffer(sequenceBytes);
-        /*
-         * Uint8Array typed array represents an array of 8-bit unsigned integers
-         * e.g. 2 bytes (4 nucleotides) => [0,0], 3 bytes (6 nucleotides) => [0,0,0]
-         * */
-        var uint8view = new Uint8Array(sequenceBuffer);
+        if (sequenceString != null) {
+            sequenceBytes = Math.ceil(sequenceString.length / 2);
+            /*
+             * this defines the length of the ArrayBuffer
+             * ArrayBuffer: generic, fixed-length raw binary data buffer
+             * */
 
-        /*
-         * convert sequenceString to 8bit patches in Uint8Array:
-         * e.g. 'ATGCAT' -> AT GC AT
-         * */
-        for (let i = 0, len = uint8view.length; i < len; i++) {
+            sequenceBuffer = new ArrayBuffer(sequenceBytes);
             /*
-             * get base on all even positions (e.g. A from AT, G from GC, A from AT)
-             * and shift the result... A = 1000 << 4 = 1000 0000
+             * Uint8Array typed array represents an array of 8-bit unsigned integers
+             * e.g. 2 bytes (4 nucleotides) => [0,0], 3 bytes (6 nucleotides) => [0,0,0]
              * */
-            uint8view[i] = __nucleotideLookupTable[sequenceString[i * 2]] << 4
+            uint8view = new Uint8Array(sequenceBuffer);
+
             /*
-             * then get base on all odd positions (e.g. T from AT...)
-             * and OR the result to the former result
-             * T = 0100 => 1000 0000 |= 0100 = 1000 0100
-             * the result in this case is the integer 132, which is stored in uint8view
-             *
-             * in short:
-             * 1000 0000 OR 0100 = 1000 0100
-             * 128 OR 4 = 132
+             * convert sequenceString to 8bit patches in Uint8Array:
+             * e.g. 'ATGCAT' -> AT GC AT
              * */
-            uint8view[i] |= __nucleotideLookupTable[sequenceString[i * 2 + 1]]
+            for (let i = 0, len = uint8view.length; i < len; i++) {
+                /*
+                 * get base on all even positions (e.g. A from AT, G from GC, A from AT)
+                 * and shift the result... A = 1000 << 4 = 1000 0000
+                 * */
+                uint8view[i] = __nucleotideLookupTable[sequenceString[i * 2]] << 4
+                /*
+                 * then get base on all odd positions (e.g. T from AT...)
+                 * and OR the result to the former result
+                 * T = 0100 => 1000 0000 |= 0100 = 1000 0100
+                 * the result in this case is the integer 132, which is stored in uint8view
+                 *
+                 * in short:
+                 * 1000 0000 OR 0100 = 1000 0100
+                 * 128 OR 4 = 132
+                 * */
+                uint8view[i] |= __nucleotideLookupTable[sequenceString[i * 2 + 1]]
+            }
+            // TODO uint8view.reverse() auf etwas anderes anwendbar?? Muss es umgedreht werden??
+            uint8view.reverse()
         }
-        uint8view.reverse()
 
         /*
          * return sequenceBuffer that has been modified by uint8view as an array of 32-bit integers
          * */
-        /*console.log('uint8: ', uint8view)
-         console.log('sequenceBuffer: ', sequenceBuffer)
-         console.log('uint32: ', new Uint32Array(sequenceBuffer))*/
-        return new Uint32Array(sequenceBuffer)
+        if (sequenceBuffer) return new Uint32Array(sequenceBuffer)
+        else return
     }
 
-    countMatches(searchBuffer, queryBuffer) {
+    countMatches(searchBuffer: Uint32Array , queryBuffer: Uint32Array ): Uint8Array {
         this.searchSeqLength = searchBuffer.length
         this.querySeqLength = queryBuffer.length
+        console.log(searchBuffer, Object.prototype.toString.call(searchBuffer))
         /*
          1000 0100 0010 0001 1000 0100 0010 1100 &
          1000 0100 1000 0100 1100 1100 1111 1111
@@ -281,7 +303,9 @@ export class SequenceTools extends GenerateLookUpTables {
          =======================================
          0000 0000 0000 0000 0000 0000 1100 1111
          */
-        let matchResult = (searchBuffer & queryBuffer)
+        let result = searchBuffer[0] & queryBuffer[0]
+        // console.log(Object.prototype.toString.call(result), result)
+        let matchResult = (result)
         matchResult |= matchResult >>> 1
         matchResult |= matchResult >>> 2
         matchResult &= 0x11111111
@@ -295,61 +319,64 @@ export class SequenceTools extends GenerateLookUpTables {
     /*
     * convert 2 nucleotides (á 4 bits) to 1 byte
     * */
-    nucleotidesToByte(ss) {
+    nucleotidesToByte(ss: string): number {
         return __nucleotidesToByte[ss] | 0
     }
 
-    readSequence(sequenceString) {
-        let nucleotideString = sequenceString.toUpperCase()
-            //remove whitespace
-            .replace(/\s/g, '')
-            //replace U (RNA) with T (DNA)
-            .replace('U', 'T')
-            //replace everything except ATGCBVHDMKRYSWN- with -
-            .replace(/[^ATGCBVHDMKRYSWN\-]/g, '-')
-        let length = nucleotideString.length | 0
+    readSequence(sequenceString: ?string): Object {
+        let nucleotideString: string;
+        if (sequenceString) {
+            nucleotideString = sequenceString.toUpperCase()
+                //remove whitespace
+                .replace(/\s/g, '')
+                //replace U (RNA) with T (DNA)
+                .replace('U', 'T')
+                //replace everything except ATGCBVHDMKRYSWN- with -
+                .replace(/[^ATGCBVHDMKRYSWN\-]/g, '-')
 
-        let max = length >>> 1
-        // Sequence has not even nucleotide count
-        let odd = length & 1
-        // determine needed endPadding to sequence (e.g. ATGCAT.. needs 2 nuc therefore 1 endPadding)
-        let endPadding = (4 - (max + odd) % 4) % 4
+            let length = nucleotideString.length | 0
 
-        let buffer = new ArrayBuffer(max + odd + endPadding + 4)
-        let dataArray = new Int8Array(buffer, 4)
+            let max = length >>> 1
+            // Sequence has not even nucleotide count
+            let odd = length & 1
+            // determine needed endPadding to sequence (e.g. ATGCAT.. needs 2 nuc therefore 1 endPadding)
+            let endPadding = (4 - (max + odd) % 4) % 4
 
-        let n
+            let buffer = new ArrayBuffer(max + odd + endPadding + 4)
+            let dataArray = new Int8Array(buffer, 4)
 
-        for (var i = 0; i < max; i++) {
-            n = i << 1
+            let n
 
-            dataArray[i] = this.nucleotidesToByte(nucleotideString[n] + nucleotideString[++n])
+            for (var i = 0; i < max; i++) {
+                n = i << 1
+
+                dataArray[i] = this.nucleotidesToByte(nucleotideString[n] + nucleotideString[++n])
+            }
+            // if odd left shift the last entry in dataArray
+            if (odd) dataArray[i] = __nucleotideLookupTable[nucleotideString[i << 1]]
+
+            console.debug('-----------dataArray-------------')
+            console.time('start time')
+            console.info('dataArray :', dataArray, 'Sequence: ', nucleotideString,'max: ', max, 'buffer: ', buffer)
+            console.log(buffer)
+            console.timeEnd('end time')
+            console.debug('------------------------------------')
+
+            this.__buffer = buffer;
+            this.__length = length;
+            //(new Uint32Array(buffer, 0, 1))[0] = length
+
+            this.__complement = null
+            this.__content = null
+            this.__fractionalContent = null
+            this.__contentATGC = null
+
+            this.sequenceString(this.__buffer)
         }
-        // if odd left shift the last entry in dataArray
-        if (odd) dataArray[i] = __nucleotideLookupTable[nucleotideString[i << 1]]
-
-        console.debug('-----------dataArray-------------')
-        console.time('start time')
-        console.info('dataArray :', dataArray, 'Sequence: ', nucleotideString,'max: ', max, 'buffer: ', buffer)
-        console.log(buffer)
-        console.timeEnd('end time')
-        console.debug('------------------------------------')
-        
-        this.__buffer = buffer;
-        this.__length = length;
-        //(new Uint32Array(buffer, 0, 1))[0] = length
-
-        this.__complement = null
-        this.__content = null
-        this.__fractionalContent = null
-        this.__contentATGC = null
-
-        this.sequenceString(this.__buffer)
-
         return this
     }
 
-    size () {
+    size (): ?number {
         return this.__length
     }
 
@@ -360,7 +387,7 @@ export class SequenceTools extends GenerateLookUpTables {
         let dataArray = new Uint8Array(buffer, 4)
         let length = (buffer.byteLength - 4) - this.__endPadding
 
-        let nucleotidesArray = new Array()
+        let nucleotidesArray = []
 
         for (let i = 0; i < length; i++) {
             nucleotidesArray[i] = __byteToNucleotides[dataArray[i]]

@@ -1,3 +1,7 @@
+/*
+* @flow
+* */
+
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -17,11 +21,11 @@ console.log(seq.readSequence('ATGCATGC'))
 
 var first = seq.__convertToUInt32Array('ATGCATGC')
 var second = seq.__convertToUInt32Array('ATGCGTGC')
-console.log(first, second)
-console.log(`There are ${seq.countMatches(first, second)} matches in your comparison`)
+/*console.log(first, second)
+console.log(`There are ${seq.countMatches(first, second)} matches in your comparison`)*/
 
-export const App = React.createClass({
-    render () {
+export const App: Function = React.createClass({
+    render (): any {
         /*console.log('app props',this.props)*/
         return (
             <div>
@@ -35,7 +39,7 @@ export const App = React.createClass({
     }
 });
 
-function mapStateToProps(state) {
+function mapStateToProps(state: Object): Object {
     return {
         primer: {
             name: state.getIn(['primer','name']),
@@ -49,7 +53,7 @@ function mapStateToProps(state) {
     }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: Function): Object {
     return bindActionCreators(actionCreators, dispatch)
 }
 
