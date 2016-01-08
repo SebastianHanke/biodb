@@ -13,10 +13,14 @@ export default React.createClass({
         //TODO: maybe refactor so that the getIn('primer') will be at the reducer function so this just returns a simple object and keeping it pure
         const inputData = {};
 
-        if (event.target.name === 'targetSeq') inputData[event.target.name] = event.target.value.toUpperCase()
-        else if (event.target.name === 'fwdSeq') inputData[event.target.name] = event.target.value.toUpperCase()
-        else if (event.target.name === 'revSeq') inputData[event.target.name] = event.target.value.toUpperCase()
-        else inputData[event.target.name] = event.target.value
+        if (event.target.name === 'targetSeq')
+            inputData[event.target.name] = event.target.value.toUpperCase()
+        else if (event.target.name === 'fwdSeq')
+            inputData[event.target.name] = event.target.value.toUpperCase()
+        else if (event.target.name === 'revSeq')
+            inputData[event.target.name] = event.target.value.toUpperCase()
+        else
+            inputData[event.target.name] = event.target.value
 
         var test = new Sequence('DNA', event.target.value, event.target.name)
         console.log(test)
@@ -30,7 +34,7 @@ export default React.createClass({
     },
     render () {
         return (
-            <div className="input_form">
+            <div className="input_form left_side">
                 <ul>
                     <Textinput name="id"
                                label="ID"

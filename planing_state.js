@@ -1,3 +1,9 @@
+//maybe use react-tabs?
+//https://github.com/rackt/react-tabs
+
+//maybe use react-modal?
+//https://github.com/rackt/react-modal
+
 import {List, Map} from 'immutable';
 
 simplePrimerState = Map({
