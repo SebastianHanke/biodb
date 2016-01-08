@@ -1,6 +1,9 @@
+/*
+ *
+ * */
 import {Nt} from './help';
 
-export function calcPositionOnTargetSeq(target, fwd_seq, rev_seq) {
+export function calcPositionOnTargetSeq(target: string, fwd_seq: string, rev_seq: string) {
 
 }
 
@@ -116,7 +119,7 @@ export class GenerateLookUpTables {
     * */
     __lookupTable() {
         var a = Object.create(null);
-        var c = new Array();
+        var c = [];
 
         //get degenerated nucleotide chars from __nucleotideLookupTable
         var keys = Object.keys(__nucleotideLookupTable);

@@ -1,7 +1,11 @@
+/*
+* @flow
+* */
+
 import React from 'react';
 
 export default React.createClass({
-    render () {
+    render (): any {
         return (
             <li>
                 <label>{this.props.label}:</label>

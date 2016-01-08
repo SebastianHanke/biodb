@@ -7,7 +7,7 @@ export const Debugger = React.createClass({
     render () {
         //this key does the warning, when removing debugger it will be gone
         return (
-            <div className="right_side">
+            <div>
                 <h2>Actual state....</h2>
                 <p><strong>name</strong>: {this.props.name}</p>
                 <p><strong>id</strong>: {this.props.id}</p>

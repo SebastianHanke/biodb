@@ -1,0 +1,13 @@
+[ignore]
+.*/prod/*
+.*/dev/*
+.*/node_modules/babel*
+.*/node_modules/fbjs*
+
+[include]
+./src/*
+
+[libs]
+
+[options]
+module.name_mapper='.*\(.styl\)' -> 'empty/object'

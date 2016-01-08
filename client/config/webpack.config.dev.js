@@ -1,24 +1,21 @@
-var webpack = require('webpack');
+var constants = require('./constants')
+var webpack = require('webpack')
 var autoPrefixer = require('autoprefixer')
 
 module.exports = {
-    entry: [
-        'babel-polyfill',
-        'webpack-dev-server/client?http://localhost:8080',
-        'webpack/hot/only-dev-server',
-        './src/index.jsx'
-    ],
+    devServer: {
+        contentBase: constants.DIST_DIRECTORY
+    },
+    entry: {
+        main: constants.SRC_DIRECTORY
+    },
     module: {
         loaders: [
             {
-                loader: "babel-loader",
-                exclude: /node_modules/,
                 test: /\.jsx?$/,
-                query: {
-                    presets: ['es2015', 'stage-0', 'react'],
-                    plugins: ['transform-runtime'],
-                    cacheDirectory: true
-                }
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+                query: { cacheDirectory: true }
             },
             {
                 test: /\.styl$/,
@@ -38,16 +35,16 @@ module.exports = {
         extensions: ['', '.js', '.jsx', 'styl']
     },
     output: {
-        path: __dirname + '/dist',
+        path: constants.DIST_DIRECTORY,
         publicPath: '/',
         filename: 'bundle.js'
     },
     postcss: [autoPrefixer()],
-    devServer: {
-        contentBase: './dist',
-        hot: true
-    },
     plugins: [
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+        }),
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.OccurenceOrderPlugin()
     ]
 };

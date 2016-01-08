@@ -1,3 +1,8 @@
+/*
+*
+* @flow
+* */
+
 import { Map } from 'immutable';
 
 /*
@@ -10,7 +15,7 @@ const initialState = new Map({
     })
 });
 
-function analyzePrimer (state, input) {
+function analyzePrimer (state: Object, input: Object): Object {
     const inputToNewStateMap = new Map({
         activeWindow: 'Analyzer',
         primer : input
@@ -19,7 +24,7 @@ function analyzePrimer (state, input) {
 
 }
 
-export const primerReducer = function (state = initialState, action = null) {
+export const primerReducer = function (state: Object = initialState, action: Object = {}): Object {
     switch (action.type) {
         case 'ANALYZE_PRIMER':
             return analyzePrimer(state, action.primerStats)

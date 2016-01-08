@@ -1,3 +1,7 @@
+/*
+* @flow
+* */
+
 import React from 'react';
 
 /*
@@ -8,31 +12,33 @@ import React from 'react';
 * */
 
 export default React.createClass({
-    render () {
+    render (): any {
         return (
             <li>
                 <label>{this.props.label}:</label>
                 {
-                    this.props.options.map(option => {
-                        return React.DOM.div({
-                            children:[
-                                React.DOM.input({
-                                    onChange: this.props.handleChange,
-                                    key: 'labelinput-'+ option,
-                                    type: 'radio',
-                                    name: this.props.name,
-                                    value: option,
-                                    required: this.props.required
-                                }),
-                                React.DOM.span({
-                                    key: 'label-'+ option,
-                                    children: [
-                                        option
-                                    ]
-                                })
-                            ]
+                    this.props.options != undefined
+                        ? this.props.options.map(option => {
+                            return React.DOM.div({
+                                children:[
+                                    React.DOM.input({
+                                        onChange: this.props.handleChange,
+                                        key: 'labelinput-'+ option,
+                                        type: 'radio',
+                                        name: this.props.name,
+                                        value: option,
+                                        required: this.props.required
+                                    }),
+                                    React.DOM.span({
+                                        key: 'label-'+ option,
+                                        children: [
+                                            option
+                                        ]
+                                    })
+                                ]
+                            })
                         })
-                    })
+                        : ''
                 }
             </li>
         )

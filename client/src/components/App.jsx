@@ -22,6 +22,7 @@ console.log(`There are ${seq.countMatches(first, second)} matches in your compar
 
 export const App = React.createClass({
     render () {
+        /*console.log('app props',this.props)*/
         return (
             <div>
                 <InputForm {...this.props}/>

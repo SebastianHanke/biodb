@@ -1,4 +1,9 @@
 /*
+*
+* @flow
+* */
+
+/*
 import React from 'react';
 
 // use with <RenderSelectBox selectOptions={['ja', 'nein']} selectMenuId='isPrivate' selectLabel='Is Private' />
@@ -41,7 +46,7 @@ import {Map} from 'immutable';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-export function renderTextInput (id, label, type) {
+export function renderTextInput (id: String, label: String, type: String): String {
     return (
         <li>
             <label>{label}:</label>
@@ -50,7 +55,7 @@ export function renderTextInput (id, label, type) {
     )
 }
 
-export function renderSelectBox (id, label, options) {
+export function renderSelectBox (id: String, label: String, options: Object): String {
     return (
         <li>
             <label>{label}:</label>
@@ -64,7 +69,7 @@ export function renderSelectBox (id, label, options) {
     )
 }
 
-export function renderCheckbox (id, label, options) {
+export function renderCheckbox (id: String, label: String, options: Object): String {
     return (
         <li>
             <label>{label}:</label>
@@ -95,7 +100,7 @@ export function renderCheckbox (id, label, options) {
     )
 }
 
-export function renderTextarea (id, label) {
+export function renderTextarea (id: String, label: String): String {
     return (
         <li>
             <label>{label}:</label>
@@ -104,7 +109,7 @@ export function renderTextarea (id, label) {
     )
 }
 
-export function renderRadioButton (id, label, options) {
+export function renderRadioButton (id: String, label: String, options: Object): String {
 
     return (
         <li>
